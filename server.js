@@ -1,12 +1,16 @@
-const bodyParser = require('body-parser');
+
 var app = require('express')();
 var http = require('http').createServer(app);
-const PORT = 4567;
+
+const port = process.env.PORT || 4567;
+
 var cors = require("cors");
 const corsOptions = {
   origin: "*",
   optionsSuccessStatus: 200
 };
+
+
 
 var io = require('socket.io')(http, {
     cors: {
@@ -36,36 +40,6 @@ var STATIC_CHANNELS = [{
     sockets: []
 }];
 
-// app.post('/new-room',(req, res) => {
-//     let data = {name: req.body.name};
-//     console.log(data)
-//     STATIC_CHANNELS.push(
-//         {
-//             name: {data},
-//             participants: 0,
-//             id: 69,
-//             sockets: []
-//         }
-//     )
-
-//   });
-
-// var STATIC_CHANNELS = [{
-//     name: 'AFL',
-//     participants: 0,
-//     id: 1,
-//     sockets: []
-// }, {
-//     name: 'Premier League',
-//     participants: 0,
-//     id: 2,
-//     sockets: []
-// }, {
-//     name: 'Manchester Utd',
-//     participants: 0,
-//     id: 3,
-//     sockets: []
-// }];
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -124,3 +98,12 @@ app.get('/getChannels', (req, res) => {
         channels: STATIC_CHANNELS
     })
 });
+
+if (process.env.NODE_ENV === 'production') {
+    const path = require('path')
+    app.use(express.static(path.join(__dirname, 'build')));
+  
+    app.get('/*', (req, res) => {
+      res.sendFile(path.join(__dirname, 'build', 'index.html'));
+    });
+  }
