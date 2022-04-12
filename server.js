@@ -21,7 +21,7 @@ var io = require('socket.io')(http, {
   });
 
 app.use(cors(corsOptions));
-app.use(bodyParser.json());
+
 
 var STATIC_CHANNELS = [{
     name: 'AFL',
@@ -47,8 +47,8 @@ app.use((req, res, next) => {
 })
 
 
-http.listen(PORT, () => {
-    console.log(`server is listening on port:${PORT}`);
+http.listen(port, () => {
+    console.log(`server is listening on port:${port}`);
 });
 
 io.on('connection', (socket) => {
